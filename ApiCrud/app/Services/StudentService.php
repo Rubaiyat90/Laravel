@@ -25,50 +25,34 @@ class StudentService
         return StudentRecordRepo::store($data);
     }
 
-    public function getUpdate(string $id, array $data)
+    public function getupdate(string $id, array $data)
     {
-        return DB::transaction(function() use($id,$data){
-            $studentRecord=StudentRecordRepo::find($id);
-            if(!$studentRecord)
-            {
+        return DB::transaction(function () use ($id, $data) {
+            $studentRecord = StudentRecordRepo::findById($id);
+
+            if (!$studentRecord) {
                 return null;
             }
 
-            $studentRecord->updateRecord($data);
-            return $studentRecord;;
+            $studentRecord->updateRecord($id, $data);
+
+            return $studentRecord;
         });
     }
+
 
     public function getdestroy(string $id)
     {
         return DB::transaction(function () use ($id) {
-            $studentRecord = StudentRecordRepo::find($id);
+            $studentRecord = StudentRecordRepo::findById($id);
 
             if (!$studentRecord) {
-                return false;
+                return null;
             }
 
-            $studentRecord->deleteRecord();
+            $studentRecord->deleteRecord($id);
 
-            return true;
+            return $studentRecord;
         });
-    }
-
-    public function getStudentsWithClass($decryptedClassId)
-    {
-        // $decryptedClassId = Crypt::decrypt($encryptedMyClassId);
-
-
-        return StudentRecord::with(['myClass' => function ($query) use ($decryptedClassId) {
-            $query->where('id', $decryptedClassId);
-        }])->get();
-    }
-
-    public function getStudentWithSenctionAndClass($decryptedSectionId, $decryptedClassId)
-    {
-        return StudentRecord::with(['section','myClass'])
-        ->where('section_id',$decryptedSectionId)
-        ->where('class_id',$decryptedClassId)
-        ->get();
     }
 }

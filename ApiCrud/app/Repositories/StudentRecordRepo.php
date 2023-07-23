@@ -37,7 +37,7 @@ trait StudentRecordRepo{
         return true;
     }
 
-    public function deleteRecord(string $id):bool
+    public function deleteRecord(string $id)
     {
         $studentRecord=StudentRecord::find($id);
 
@@ -46,8 +46,8 @@ trait StudentRecordRepo{
             return false;
         }
 
-        $studentRecord->delete($data);
-        return true;
+        $studentRecord->delete($studentRecord);
+        return $studentRecord;
     }
 
 }

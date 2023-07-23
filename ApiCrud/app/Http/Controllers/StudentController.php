@@ -5,20 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\StudentService;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
     private $getStudents;
     private $getstore;
-    private $getUpdate;
+    private $getupdate;
     private $getfindById;
     private $getdestroy;
 
-    public function __construct(StudentService $getStudents, StudentService $getstore, StudentService $getUpdate,StudentService $getfindById, StudentService $getdestroy)
+    public function __construct(StudentService $getStudents, StudentService $getstore, StudentService $getupdate,StudentService $getfindById, StudentService $getdestroy)
     {
         $this->getStudents=$getStudents;
         $this->getstore=$getstore;
-        $this->getupdate=$getUpdate;
+        $this->getupdate=$getupdate;
         $this->getfindById=$getfindById;
         $this->getdestroy=$getdestroy;
     }
@@ -75,79 +76,60 @@ class StudentController extends Controller
 
     public function edit(string $id)
     {
-        try{
-            $studentRecord=$this->getfindById->getfindById($id);
-
-            if(!$studentRecord)
-            {
+        try {
+            $studentRecord = $this->getfindById->getfindById($id);
+    
+            if (!$studentRecord) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Student record not found.',
                 ], 404);
             }
+
             return response()->json([
-                'status'=>true,
-                'message'=>'student retrieved successfully',
-                'data'=>$studentRecord,
+                'status' => true,
+                'message' => 'Retrieve Student record for editing.',
+                'data' => $studentRecord,
             ], 200);
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
-                'status'=>false,
-                'message'=>'failed editing. please try again',
-                'error'=>$e->getMessage(),
+                'status' => false,
+                'message' => 'Failed to retrieve student record for editing. Please try again later.',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
+
 
     public function update(Request $request, string $id)
     {
-        try
-        {
-            $validatedData=$request->validate([
-                'id'=>'required|integer',
-                'name'=>'required|string',
-                'phone'=>'required|string'
+        try {
+            $validatedData = $request->validate([
+                'name' => 'string',
+                'phone' => 'string',
             ]);
-            $students=$this->getUpdate->getUpdate($id,$validatedData);
-
-            if(!$studentRecord)
-            {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Student record not found.',
-                ], 404);
-            }
-
+    
+            $studentRecord = $this->getupdate->getupdate($id, $validatedData);
+    
             return response()->json([
-                'status'=>true,
-                'message'=>'student updated successfully',
-                'data'=>$studentsS,
+                'status' => true,
+                'message' => 'Student updated successfully.',
+                'data' => $studentRecord,
             ], 200);
-        }
-        catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json([
-                'status'=>false,
-                'message'=>'failed. please try again',
-                'error'=>$e->getMessage(),
+                'status' => false,
+                'message' => 'student update failed.',
+                'data' => $e->getMessage(),
             ], 500);
         }
     }
 
-    public function destroy(string $id)
+
+    public function delete(string $id)
     {
         try{
-            $result = $this->getdestroy->getdestroy($id);
-
-            if($result)
-            {
-                return response()->json([
-                    'status'=>false,
-                    'message'=>'Record not found',
-                ],404);
-            }
+            $studentRecord = $this->getdestroy->getdestroy($id);
             return response()->json([
                 'status' => true,
                 'message' => 'Student record deleted successfully',
