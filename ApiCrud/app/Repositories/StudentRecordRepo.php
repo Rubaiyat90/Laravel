@@ -9,9 +9,9 @@ trait StudentRecordRepo{
         return StudentRecord::orderBy('name');
     }
 
-    public static function getStudentWithClass()
+    public static function getStudents()
     {
-        return StudentRecord::with('myclass')->get();
+        return StudentRecord::with('studentRecord')->get();
     }
 
     public static function findById(string $id): ?StudentRecord
@@ -24,7 +24,7 @@ trait StudentRecordRepo{
         return StudentRecord::create($data);
     }
 
-    public function updateRecord(string $id,array $data): bool
+    public function updateRecord(string $id,array $data)
     {
         $studentRecord=StudentRecord::find($id);
 
@@ -34,7 +34,7 @@ trait StudentRecordRepo{
         }
 
         $studentRecord->update($data);
-        return true;
+        return $studentRecord;
     }
 
     public function deleteRecord(string $id)

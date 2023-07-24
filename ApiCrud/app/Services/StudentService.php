@@ -12,7 +12,6 @@ class StudentService
     public function getStudents()
     {
         return StudentRecordRepo::StudentRecord()->get();
-
     }
 
     public function getfindById(string $id)

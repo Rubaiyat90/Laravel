@@ -10,18 +10,10 @@ use Illuminate\Support\Facades\Validator;
 class StudentController extends Controller
 {
     private $getStudents;
-    private $getstore;
-    private $getupdate;
-    private $getfindById;
-    private $getdestroy;
 
-    public function __construct(StudentService $getStudents, StudentService $getstore, StudentService $getupdate,StudentService $getfindById, StudentService $getdestroy)
+    public function __construct(StudentService $getStudents)
     {
         $this->getStudents=$getStudents;
-        $this->getstore=$getstore;
-        $this->getupdate=$getupdate;
-        $this->getfindById=$getfindById;
-        $this->getdestroy=$getdestroy;
     }
 
     public function index()
@@ -51,11 +43,10 @@ class StudentController extends Controller
     {
         try{
             $validatedData=$request->validate([
-                'id'=>'required|integer',
                 'name'=>'required|string',
                 'phone'=>'required|string'
             ]);
-            $studentRecord=$this->getstore->getstore($validatedData);
+            $studentRecord=$this->getStudents->getstore($validatedData);
 
             return response()->json([
                 'status'=>true,
@@ -77,7 +68,7 @@ class StudentController extends Controller
     public function edit(string $id)
     {
         try {
-            $studentRecord = $this->getfindById->getfindById($id);
+            $studentRecord = $this->getStudents->getfindById($id);
     
             if (!$studentRecord) {
                 return response()->json([
@@ -109,7 +100,7 @@ class StudentController extends Controller
                 'phone' => 'string',
             ]);
     
-            $studentRecord = $this->getupdate->getupdate($id, $validatedData);
+            $studentRecord = $this->getStudents->getupdate($id, $validatedData);
     
             return response()->json([
                 'status' => true,
@@ -126,10 +117,10 @@ class StudentController extends Controller
     }
 
 
-    public function delete(string $id)
+    public function destroy(string $id)
     {
         try{
-            $studentRecord = $this->getdestroy->getdestroy($id);
+            $studentRecord = $this->getStudents->getdestroy($id);
             return response()->json([
                 'status' => true,
                 'message' => 'Student record deleted successfully',
