@@ -3,9 +3,16 @@
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\LoginUserController;
 use App\Http\Controllers\RegisteredUserController;
+use App\Jobs\Translate;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use App\Models\Job;
+
+Route::get('test', function () {
+    $job = Job::first();
+    Translate::dispatch($job);
+    return 'done';
+});
 
 Route::view('/', 'home');
 Route::view('/about', 'about');
